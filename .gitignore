@@ -1,0 +1,11 @@
+.*.sw*
+.DS_Store
+
+# Build system
+makeconfig.mk
+anims/**/*.anim
+out/*
+
+# Invisible Inc.
+scripts.zip
+int/*
