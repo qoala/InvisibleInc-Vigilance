@@ -12,6 +12,7 @@ local function init(modApi)
     -- rawset(_G,"SCRIPT_PATHS",rawget(_G,"SCRIPT_PATHS") or {})
     -- SCRIPT_PATHS.qed_vig = scriptPath
 
+    include(scriptPath .. "/engine")
 end
 
 local function lateInit(modApi)
@@ -24,8 +25,16 @@ local function earlyLoad(modApi, options, params)
     earlyUnload(modApi)
 end
 
-local function load(modApi, options, params)
+local function unload(modApi)
     local scriptPath = modApi:getScriptPath()
+
+    local npc_abilities = include(scriptPath .. "/npc_abilities")
+    for name, ability in pairs(npc_abilities) do
+        modApi:addDaemonAbility(name, ability)
+    end
+end
+local function load(modApi, options, params)
+    unload(modApi)
 end
 
 local function lateLoad(modApi, options, params)
@@ -35,8 +44,7 @@ local function initStrings(modApi)
     local dataPath = modApi:getDataPath()
     local scriptPath = modApi:getScriptPath()
 
-    -- local MOD_STRINGS = include(scriptPath .. "/strings")
-    -- modApi:addStrings(dataPath, "QED_VIG", MOD_STRINGS)
+    modApi:addStrings(dataPath, "QED_VIG", include(scriptPath .. "/strings"))
 end
 
 return {
@@ -46,6 +54,7 @@ return {
     -- earlyLoad = earlyLoad,
     -- earlyUnload = earlyUnload,
     load = load,
+    unload = unload,
     -- lateLoad = lateLoad,
     initStrings = initStrings,
 }
