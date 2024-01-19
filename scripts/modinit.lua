@@ -12,6 +12,7 @@ local function init(modApi)
     -- rawset(_G,"SCRIPT_PATHS",rawget(_G,"SCRIPT_PATHS") or {})
     -- SCRIPT_PATHS.qed_vig = scriptPath
 
+    include(scriptPath .. "/actions")
 end
 
 local function lateInit(modApi)
