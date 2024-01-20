@@ -32,6 +32,8 @@ local function unload(modApi)
     for name, ability in pairs(npc_abilities) do
         modApi:addDaemonAbility(name, ability)
     end
+
+    modApi:addTooltipDef(include(scriptPath .. "/commondefs"))
 end
 local function load(modApi, options, params)
     unload(modApi)

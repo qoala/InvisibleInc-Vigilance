@@ -1,3 +1,3 @@
-name = Vigilant Guards
+name = Vigilance Protocol
 author = qoalabear
 version = 0.2.0

@@ -27,12 +27,8 @@ SENSE_REASONS = {
         [simdefs.REASON_SENSEDTARGET] = true, -- Static peripheral vision.
         -- [simdefs.REASON_NOTICED] = true, -- Noticed by peeking. DISABLED: Wrong timing.
     },
-    [simdefs.SENSE_SIGHT] = {
-        [simdefs.REASON_DOOR] = true,
-    },
-    [simdefs.SENSE_HEARING] = {
-        [simdefs.REASON_NOISE] = true,
-    },
+    [simdefs.SENSE_SIGHT] = {[simdefs.REASON_DOOR] = true},
+    [simdefs.SENSE_HEARING] = {[simdefs.REASON_NOISE] = true},
 }
 local function isValidInterest(sim, interest)
     if interest.sourceUnit and simquery.isEnemyAgent(sim:getNPC(), interest.sourceUnit, true) then
@@ -40,6 +36,15 @@ local function isValidInterest(sim, interest)
         return reasons and reasons[interest.reason]
     end
 end
+
+-- function cleanupVigTarget(target)
+--     if target and target.isVigTarget and target.isVigTarget > 0 then
+--         target.isVigTarget = target.isVigTarget - 1
+--         if target.isVigTarget == 0 then
+--             target.isVigTarget = nil
+--         end
+--     end
+-- end
 
 --
 
@@ -99,13 +104,13 @@ function qed_vigilance:onStartTurn(sim)
                             y = y,
                             color = {r = 101 / 255, g = 232 / 255, b = 248 / 255, a = 1},
                         })
-                -- sim:dispatchEvent(simdefs.EV_UNIT_WIRELESS_SCAN, {unitID = target:getID()})
                 brain:getSenses():addInterest(
                         x, y, simdefs.SENSE_SIGHT, simdefs.REASON_SCANNED, target, true)
             end
 
             -- Cleanup.
             unit:getTraits().hasVigTarget = nil
+            -- cleanupVigTarget(target)
         end
     end
 end
@@ -113,7 +118,11 @@ function qed_vigilance:onNotice(sim, unit, target)
     if unit:getTraits().hasVigTarget == target:getID() then
         return -- Already tracking.
     end
+    -- if unit:getTraits().hasVigTarget then
+    --     cleanupVigTarget(sim:getUnit(unit:getTraits().hasVigTarget))
+    -- end
     unit:getTraits().hasVigTarget = target:getID()
+    -- target:getTraits().isVigTarget = (target:getTraits().isVigTarget or 0) + 1
 
     local x0, y0 = target:getLocation()
     sim:dispatchEvent(simdefs.EV_PLAY_SOUND, "SpySociety/Actions/mainframe_wisp_reveal")
@@ -124,26 +133,6 @@ function qed_vigilance:onNotice(sim, unit, target)
                 y = y0,
                 color = {r = 101 / 255, g = 232 / 255, b = 248 / 255, a = 1},
             })
-    -- sim:dispatchEvent(
-    --         simdefs.EV_UNIT_ADD_FX, {
-    --             unit = target,
-    --             kanim = "fx/firewall_buff_fx_2",
-    --             symbol = "character",
-    --             anim = "in",
-    --             above = true,
-    --             params = {
-    --                 color = {
-    --                     {symbol = "wall", r = 101 / 255, g = 232 / 255, b = 248 / 255, a = 1},
-    --                     {
-    --                         symbol = "outline_side",
-    --                         r = 101 / 255,
-    --                         g = 232 / 255,
-    --                         b = 248 / 255,
-    --                         a = 0.75,
-    --                     },
-    --                 },
-    --             },
-    --         })
 end
 
 return {qed_vigilance = qed_vigilance}
