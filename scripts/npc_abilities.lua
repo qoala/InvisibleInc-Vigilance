@@ -24,7 +24,8 @@ end
 SENSE_REASONS = {
     [simdefs.SENSE_PERIPHERAL] = {
         [simdefs.REASON_DOOR] = true,
-        [simdefs.REASON_SENSEDTARGET] = true,
+        [simdefs.REASON_SENSEDTARGET] = true, -- Static peripheral vision.
+        -- [simdefs.REASON_NOTICED] = true, -- Noticed by peeking. DISABLED: Wrong timing.
     },
     [simdefs.SENSE_SIGHT] = {
         [simdefs.REASON_DOOR] = true,
@@ -109,6 +110,9 @@ function qed_vigilance:onStartTurn(sim)
     end
 end
 function qed_vigilance:onNotice(sim, unit, target)
+    if unit:getTraits().hasVigTarget == target:getID() then
+        return -- Already tracking.
+    end
     unit:getTraits().hasVigTarget = target:getID()
 
     local x0, y0 = target:getLocation()
