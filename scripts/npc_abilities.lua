@@ -49,7 +49,7 @@ end
 --
 
 local qed_vigilance = util.extend(createDaemon(STRINGS.QED_VIG.DAEMONS.VIGILANCE)) {
-    icon = "gui/icons/daemon_icons/Daemons0004.png",
+    icon = "gui/icons/daemon_icons/vigilance.png",
 
     standardDaemon = false,
     reverseDaemon = false,

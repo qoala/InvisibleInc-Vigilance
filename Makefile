@@ -7,45 +7,68 @@
 
 include makeconfig.mk
 
-.PHONY: build
+.PHONY: build install clean distclean cleanOut cleanGenAnims
+.SECONDEXPANSION:
 
-build: out/modinfo.txt out/scripts.zip
+ensuredir = @mkdir -p $(@D)
 
-install: build
-	mkdir -p $(INSTALL_PATH)
-	rm -f $(INSTALL_PATH)/*.kwad $(INSTALL_PATH)/*.zip
-	cp out/modinfo.txt $(INSTALL_PATH)/
-	cp out/scripts.zip $(INSTALL_PATH)/
+files := modinfo.txt scripts.zip gui.kwad
+outfiles := $(addprefix out/, $(files))
+installfiles := $(addprefix $(INSTALL_PATH)/, $(files))
+
 ifneq ($(INSTALL_PATH2),)
-	mkdir -p $(INSTALL_PATH2)
-	rm -f $(INSTALL_PATH2)/*.kwad $(INSTALL_PATH2)/*.zip
-	cp out/modinfo.txt $(INSTALL_PATH2)/
-	cp out/scripts.zip $(INSTALL_PATH2)/
+	installfiles += $(addprefix $(INSTALL_PATH2)/, $(files))
+endif
+
+build: $(outfiles)
+install: build $(installfiles)
+
+$(installfiles): %: out/$$(@F)
+	$(ensuredir)
+	cp $< $@
+
+clean: cleanOut # cleanGenAnims
+cleanOut:
+	-rm out/*
+
+distclean:
+	-rm -f $(INSTALL_PATH)/*.kwad $(INSTALL_PATH)/*.zip
+ifneq ($(INSTALL_PATH2),)
+	-rm -f $(INSTALL_PATH2)/*.kwad $(INSTALL_PATH2)/*.zip
 endif
 
 out/modinfo.txt: modinfo.txt
-	mkdir -p out
+	$(ensuredir)
 	cp modinfo.txt out/modinfo.txt
 
 #
-# kwads and contained files
+## kwads and contained files
 #
 
+# genanims := $(patsubst %.py,%.xml,$(shell find anims -type f -name "animation.py"))
 # anims := $(patsubst %.anim.d,%.anim,$(shell find anims -type d -name "*.anim.d"))
-#
-# $(anims): %.anim: $(wildcard %.anim.d/*.xml $.anim.d/*.png)
-# 	cd $*.anim.d && zip ../$(notdir $@) *.xml *.png
+gui_files := $(wildcard gui/**/*.png gui/*.lua gui/**/*.lua)
+# images_files := $(wildcard images/**/*.png)
 
-# gui_files := $(wildcard gui/**/*.png)
+# $(genanims): %.xml: %.py $$(wildcard $$*.vanilla.xml)
+# 	python3 $*.py
 # 
-# out/gui.kwad: $(gui_files)
-# 	mkdir -p out
-# 	$(KWAD_BUILDER) -i build.lua -o out
+# $(anims): %.anim: $$*.anim.d/animation.xml $$*.anim.d/build.xml $$(wildcard $$*.anim.d/*.png)
+# 	cd $*.anim.d && zip ../$(notdir $@) animation.xml build.xml *.png
+
+
+out/gui.kwad: build.lua $(gui_files) # $(anims) $(images_files)
+	$(ensuredir)
+	$(KWAD_BUILDER) -i build.lua -o out
+
+# cleanGenAnims:
+# 	-rm $(genanims) anims/**/*.anim
 
 #
-# scripts
+## scripts
 #
 
 out/scripts.zip: $(shell find scripts -type f -name "*.lua")
-	mkdir -p out
+	$(ensuredir)
 	cd scripts && zip -r ../$@ . -i '*.lua'
+

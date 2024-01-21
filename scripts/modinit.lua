@@ -12,6 +12,9 @@ local function init(modApi)
     -- rawset(_G,"SCRIPT_PATHS",rawget(_G,"SCRIPT_PATHS") or {})
     -- SCRIPT_PATHS.qed_vig = scriptPath
 
+    local dataPath = modApi:getDataPath()
+    KLEIResourceMgr.MountPackage(dataPath .. "/gui.kwad", "data")
+
     include(scriptPath .. "/engine")
 end
 
