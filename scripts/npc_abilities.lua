@@ -26,7 +26,7 @@ SENSE_REASONS = {
     [simdefs.SENSE_PERIPHERAL] = {
         [simdefs.REASON_DOOR] = true,
         [simdefs.REASON_SENSEDTARGET] = true, -- Static peripheral vision.
-        -- [simdefs.REASON_NOTICED] = true, -- Noticed by peeking. DISABLED: Wrong timing.
+        [simdefs.REASON_NOTICED] = true, -- Noticed by peeking.
     },
     [simdefs.SENSE_SIGHT] = {[simdefs.REASON_DOOR] = true},
     [simdefs.SENSE_HEARING] = {[simdefs.REASON_NOISE] = true},
@@ -36,6 +36,14 @@ local function isValidInterest(sim, interest)
         local reasons = SENSE_REASONS[interest.sense]
         return reasons and reasons[interest.reason]
     end
+end
+
+-- Skip vigilance notification for peek-noticed agents that are still the guard's interest.
+-- Such interests are otherwise just a retargeting of vigilance protocol rather than a primary source.
+local function alreadyNoticed(brain, target)
+	local i = brain:getInterest()
+	local x, y = target:getLocation()
+	return i and i.x == x and i.y == y and ((i.sense == simdefs.SENSE_PERIPHERAL and i.reason == simdefs.REASON_NOTICED) or i.reason == simdefs.REASON_SCANNED)
 end
 
 -- function cleanupVigTarget(target)
@@ -115,7 +123,7 @@ function qed_vigilance:onStartTurn(sim)
         if unit:getTraits().hasVigTarget then
             local target = sim:getUnit(unit:getTraits().hasVigTarget)
             local brain = target and isBrainy(unit)
-            if brain and isOK(target) then
+            if brain and isOK(target) and not alreadyNoticed(brain, target) then
                 local x, y = target:getLocation()
                 local x0, y0 = unit:getLocation()
                 sim:dispatchEvent(
