@@ -1,4 +1,4 @@
-local util = include("modules/util")
+local util = include("client_util")
 local mainframe_common = include("sim/abilities/mainframe_common")
 local simdefs = include("sim/simdefs")
 local simquery = include("sim/simquery")
@@ -17,7 +17,8 @@ local function isBrainy(unit)
 end
 
 local function isValidGuard(unit)
-    return not unit:getTraits().alerted and unit:getPlayerOwner():isNPC()
+    return not unit:getTraits().alerted and unit:getPlayerOwner():isNPC() and
+                   not (unit:getTraits().pacifist and not unit:getTraits().isDrone)
     -- and not unit:getTraits().hasVigTarget
 end
 
@@ -72,6 +73,26 @@ function qed_vigilance:onDespawnAbility(sim)
     sim:removeTrigger(simdefs.TRG_START_TURN, self)
     sim:removeTrigger(simdefs.TRG_UNIT_NEWINTEREST, self)
     -- sim:removeTrigger(simdefs.TRG_UNIT_NEWTARGET, self)
+end
+
+function qed_vigilance:onTooltip(hud, sim, player)
+    local tooltip = util.tooltip(hud._screen)
+    local section = tooltip:addSection()
+    -- Vanilla lines
+    section:addLine(self.name)
+    section:addAbility(
+            self.shortdesc, self.desc,
+            "gui/icons/action_icons/Action_icon_Small/icon-item_shoot_small.png")
+    -- Additional line.
+    section:addAbility(
+            STRINGS.QED_VIG.DAEMONS.VIGILANCE.SCOPE,
+            STRINGS.QED_VIG.DAEMONS.VIGILANCE.SCOPE_DESC, "gui/icons/arrow_small.png")
+    -- Vanilla footer
+    if self.dlcFooter then
+        section:addFooter(self.dlcFooter[1], self.dlcFooter[2])
+    end
+
+    return tooltip
 end
 
 function qed_vigilance:onTrigger(sim, evType, evData)

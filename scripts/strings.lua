@@ -3,8 +3,10 @@ local s = {
         VIGILANCE = {
             NAME = "VIGILANCE",
             DESC = "Pinpoint agent location at the start of the next turn after being noticed or heard by non-alerted guards.",
-            SHORT_DESC = "Guides non-alerted guards",
+            SHORT_DESC = "Lead guards to agents",
             ACTIVE_DESC = "",
+            SCOPE = "Pre-hunt Protocol",
+            SCOPE_DESC = "Does not apply to unarmed humans. Does not apply to alerted guards.",
         },
     },
     TOOLTIPS = {
