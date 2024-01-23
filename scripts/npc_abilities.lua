@@ -124,7 +124,7 @@ function qed_vigilance:onStartTurn(sim)
     for _, unit in pairs(sim:getAllUnits()) do
         if unit:getTraits().hasVigTarget then
             local target = sim:getUnit(unit:getTraits().hasVigTarget)
-            local brain = target and isBrainy(unit)
+            local brain = target and not unit:getTraits().alerted and isBrainy(unit)
             if brain and isOK(target) and not alreadyNoticed(brain, target) then
                 local x, y = target:getLocation()
                 local x0, y0 = unit:getLocation()

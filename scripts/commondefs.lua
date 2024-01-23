@@ -8,7 +8,7 @@ local util = include("modules/util")
 --     end
 -- end
 function onGuardTooltip(tooltip, unit)
-    if unit:getTraits().hasVigTarget then
+    if unit:getTraits().hasVigTarget and not unit:getTraits().alerted then
         local target = unit:getSim():getUnit(unit:getTraits().hasVigTarget)
         if target then
             local desc = util.sformat(
