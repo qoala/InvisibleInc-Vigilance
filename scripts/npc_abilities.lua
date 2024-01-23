@@ -41,9 +41,11 @@ end
 -- Skip vigilance notification for peek-noticed agents that are still the guard's interest.
 -- Such interests are otherwise just a retargeting of vigilance protocol rather than a primary source.
 local function alreadyNoticed(brain, target)
-	local i = brain:getInterest()
-	local x, y = target:getLocation()
-	return i and i.x == x and i.y == y and ((i.sense == simdefs.SENSE_PERIPHERAL and i.reason == simdefs.REASON_NOTICED) or i.reason == simdefs.REASON_SCANNED)
+    local i = brain:getInterest()
+    local x, y = target:getLocation()
+    return i and i.x == x and i.y == y and
+                   ((i.sense == simdefs.SENSE_PERIPHERAL and i.reason == simdefs.REASON_NOTICED) or
+                           i.reason == simdefs.REASON_SCANNED)
 end
 
 -- function cleanupVigTarget(target)
@@ -93,8 +95,8 @@ function qed_vigilance:onTooltip(hud, sim, player)
             "gui/icons/action_icons/Action_icon_Small/icon-item_shoot_small.png")
     -- Additional line.
     section:addAbility(
-            STRINGS.QED_VIG.DAEMONS.VIGILANCE.SCOPE,
-            STRINGS.QED_VIG.DAEMONS.VIGILANCE.SCOPE_DESC, "gui/icons/arrow_small.png")
+            STRINGS.QED_VIG.DAEMONS.VIGILANCE.SCOPE, STRINGS.QED_VIG.DAEMONS.VIGILANCE.SCOPE_DESC,
+            "gui/icons/arrow_small.png")
     -- Vanilla footer
     if self.dlcFooter then
         section:addFooter(self.dlcFooter[1], self.dlcFooter[2])
