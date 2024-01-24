@@ -1,3 +1,4 @@
 name = Vigilance Protocol
 author = qoalabear
+icon = gui/icons/qedvigmod.png
 version = 0.2.0
