@@ -20,6 +20,7 @@ local s = {
             ACTIVE_DESC = "Pinpoints agents after distractions.",
             SCOPE = "Pre-hunt Protocol",
             SCOPE_DESC = "Does not apply to unarmed humans. Does not apply to alerted guards.",
+            ALARM_ACTIVE_DESC = "New patrols & distraction penalty.",
         },
     },
     TOOLTIPS = {

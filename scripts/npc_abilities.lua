@@ -168,7 +168,9 @@ end
 
 local qed_vigilance_mission = util.extend(vigBase) {}
 
-local qed_vigilance_alarm = util.extend(vigBase) {}
+local qed_vigilance_alarm = util.extend(vigBase) {
+    activedesc = STRINGS.QED_VIG.DAEMONS.VIGILANCE.ALARM_ACTIVE_DESC,
+}
 function qed_vigilance_alarm:onSpawnAbility(sim, player)
     sim:dispatchEvent(
             simdefs.EV_SHOW_DAEMON, {name = self.name, icon = self.icon, txt = self.activedesc})
