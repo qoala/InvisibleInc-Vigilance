@@ -112,11 +112,6 @@ function vigBase:onTrigger(sim, evType, evData)
             isValidInterest(sim, evData.interest) then
         self:onNotice(sim, evData.unit, evData.interest.sourceUnit)
     end
-    if evType == simdefs.TRG_UNIT_NEWINTEREST then
-        simlog("QDBG: vig trg %s", tostring(evData.unit))
-        util.tlog(util.tkeys(evData or {}))
-        util.tlog(util.tkeys(evData.unit or {}))
-    end
     -- elseif evType == simdefs.TRG_UNIT_NEWTARGET then
     --     self:onNotice(sim, evData.unit, evData.target)
 end
