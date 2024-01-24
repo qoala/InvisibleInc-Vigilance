@@ -5,7 +5,7 @@ local s = {
         MODE_OPTS = { --
             "OFF",
             "ALL MISSION",
-            -- "POST-MID ALARMS",
+            "POST-MID ALARMS",
             -- "RANDOM DAEMONS",
         },
         START_DAY = "  STARTING DIFFICULTY",
@@ -14,10 +14,10 @@ local s = {
 
     DAEMONS = {
         VIGILANCE = {
-            NAME = "VIGILANCE",
-            DESC = "Pinpoint agent location at the start of the next turn after being noticed or heard by non-alerted guards.",
+            NAME = "VIGILANCE 2.0",
+            DESC = "Pinpoints agent location at the start of the next turn after being noticed or heard by non-alerted guards.",
             SHORT_DESC = "Lead guards to agents",
-            ACTIVE_DESC = "",
+            ACTIVE_DESC = "Pinpoints agents after distractions.",
             SCOPE = "Pre-hunt Protocol",
             SCOPE_DESC = "Does not apply to unarmed humans. Does not apply to alerted guards.",
         },

@@ -7,6 +7,6 @@ function simengine:init(...)
     local opts = self:getParams().difficultyOptions
     if config.QED_FORCE_VIG == 1 or
             (opts.qed_vigMode == 1 and (opts.qed_vigStart or 1) >= self:getParams().difficulty) then
-        self:getNPC():addMainframeAbility(self, "qed_vigilance", nil, 0)
+        self:getNPC():addMainframeAbility(self, "qed_vigilance_mission", nil, 0)
     end
 end

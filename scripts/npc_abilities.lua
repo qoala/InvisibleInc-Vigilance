@@ -59,7 +59,7 @@ end
 
 --
 
-local qed_vigilance = util.extend(createDaemon(STRINGS.QED_VIG.DAEMONS.VIGILANCE)) {
+local vigBase = util.extend(createDaemon(STRINGS.QED_VIG.DAEMONS.VIGILANCE)) {
     icon = "gui/icons/daemon_icons/vigilance.png",
 
     standardDaemon = false,
@@ -74,18 +74,18 @@ local qed_vigilance = util.extend(createDaemon(STRINGS.QED_VIG.DAEMONS.VIGILANCE
     REVERSE_DAEMONS = false,
 }
 
-function qed_vigilance:onSpawnAbility(sim, player)
+function vigBase:onSpawnAbility(sim, player)
     sim:addTrigger(simdefs.TRG_START_TURN, self)
     sim:addTrigger(simdefs.TRG_UNIT_NEWINTEREST, self)
     -- sim:addTrigger(simdefs.TRG_UNIT_NEWTARGET, self)
 end
-function qed_vigilance:onDespawnAbility(sim)
+function vigBase:onDespawnAbility(sim)
     sim:removeTrigger(simdefs.TRG_START_TURN, self)
     sim:removeTrigger(simdefs.TRG_UNIT_NEWINTEREST, self)
     -- sim:removeTrigger(simdefs.TRG_UNIT_NEWTARGET, self)
 end
 
-function qed_vigilance:onTooltip(hud, sim, player)
+function vigBase:onTooltip(hud, sim, player)
     local tooltip = util.tooltip(hud._screen)
     local section = tooltip:addSection()
     -- Vanilla lines
@@ -105,7 +105,7 @@ function qed_vigilance:onTooltip(hud, sim, player)
     return tooltip
 end
 
-function qed_vigilance:onTrigger(sim, evType, evData)
+function vigBase:onTrigger(sim, evType, evData)
     if evType == simdefs.TRG_START_TURN and evData:isPC() then
         self:onStartTurn(sim)
     elseif evType == simdefs.TRG_UNIT_NEWINTEREST and isValidGuard(evData.unit) and
@@ -120,7 +120,7 @@ function qed_vigilance:onTrigger(sim, evType, evData)
     -- elseif evType == simdefs.TRG_UNIT_NEWTARGET then
     --     self:onNotice(sim, evData.unit, evData.target)
 end
-function qed_vigilance:onStartTurn(sim)
+function vigBase:onStartTurn(sim)
     for _, unit in pairs(sim:getAllUnits()) do
         if unit:getTraits().hasVigTarget then
             local target = sim:getUnit(unit:getTraits().hasVigTarget)
@@ -145,7 +145,7 @@ function qed_vigilance:onStartTurn(sim)
         end
     end
 end
-function qed_vigilance:onNotice(sim, unit, target)
+function vigBase:onNotice(sim, unit, target)
     if unit:getTraits().hasVigTarget == target:getID() then
         return -- Already tracking.
     end
@@ -166,4 +166,17 @@ function qed_vigilance:onNotice(sim, unit, target)
             })
 end
 
-return {qed_vigilance = qed_vigilance}
+local qed_vigilance_mission = util.extend(vigBase) {}
+
+local qed_vigilance_alarm = util.extend(vigBase) {}
+function qed_vigilance_alarm:onSpawnAbility(sim, player)
+    sim:dispatchEvent(
+            simdefs.EV_SHOW_DAEMON, {name = self.name, icon = self.icon, txt = self.activedesc})
+
+    vigBase.onSpawnAbility(self, sim, player)
+end
+
+return { --
+    qed_vigilance_mission = qed_vigilance_mission,
+    qed_vigilance_alarm = qed_vigilance_alarm,
+}

@@ -17,7 +17,7 @@ local function init(modApi)
     modApi:addGenerationOption(
             "mode", STR.MODE, STR.MODE_TIP, {
                 noUpdate = true,
-                values = {false, 1}, -- 2, 3},
+                values = {false, 1, 2}, -- , 3},
                 value = 1,
                 strings = STR.MODE_OPTS,
                 masks = {{mask = "mask_qed_vig_always", requirement = 1}},
@@ -33,6 +33,7 @@ local function init(modApi)
     local dataPath = modApi:getDataPath()
     KLEIResourceMgr.MountPackage(dataPath .. "/gui.kwad", "data")
 
+    include(scriptPath .. "/alarm_states")
     include(scriptPath .. "/engine")
 end
 
@@ -62,6 +63,7 @@ local function load(modApi, options, params)
             params.qed_vigStart = options["startDay"] and options["startDay"].value or 1
         elseif mode == 2 then
             params.qed_vigMode = 2
+            params.qed_vigNoCM = true
         elseif mode == 3 then
             params.qed_vigMode = 3
         end
